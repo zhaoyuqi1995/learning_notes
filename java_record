@@ -1,0 +1,16 @@
+1.学习反射时，获取class类后，使用newInstance获取实例，要求该类需有空参构造器，且权限为非私有的。疑问，单例模式的类中方法如何通过反射获取呢？
+answer：
+        String className = "normaltest.danli.Singleton";
+        Class<?> clazz = Class.forName(className);
+        Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+        AccessibleObject.setAccessible(constructors, true);
+
+        for (Constructor constructor : constructors) {
+            if (constructor.isAccessible()) {
+                Object instance = constructor.newInstance();
+                Method method = clazz.getMethod("sayHello");
+                method.invoke(instance);
+            }
+        }
+
+注：java9之后弃用newInstance()方法  使用class.getDeclaredConstructor().newInstance();

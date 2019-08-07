@@ -1,0 +1,55 @@
+一、springboot介绍
+0. 默认打包 为jar包 使用 java -jar执行 成功运行
+1. 对spring进行了封装，内部整合好了 安全spring security、数据spring data等。
+2. 使用方便 可以打jar包 使用 java -jar 直接执行。内嵌servlet
+3. 各个starters 实现自动依赖。
+
+二、、引入oracle依赖遇到的问题
+mvn环境配置 springboot连接oracle需手动放置jar包 因为maven中央仓库不提供相关jar
+在本机找到ojdbc6.jar（路径：E:\app\JHOEMR\product\11.2.0\dbhome_1\jdbc\lib） 
+找到mvn位置 执行以下命令  
+mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.1.0 -Dpackaging=jar -Dfile=E:\ojdbc6.jar
+成功后 加入本地仓库 引入依赖即可。 【OK】
+
+三、使用JPA进行CRUD
+建立entity实体  使用注解 @Entity @Table @Column
+建立接口 ***JPA 继承SpringDataJPA内的接口（JpaRepository   JpaSpecificationExecutor）  Serializable
+在controller 直接注入方式 使用 ***JPA
+注意：
+1. 运行代码 获取数据库时 报错：com.fasterxml.jackson.databind.exc.InvalidDefinitionException: No serializer found for class org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor and no properties discovered to create BeanSerializer(to avoid exception, disable SerializationFeature.FAIL_ON_EMPTY_BEANS)
+        原因：SpringBoot默认的jackson进行对象json化出现错误 
+        解决：手动使用其他json框架如fastJSON进行json化然后返回 引入依赖 【不好使！！！】             
+        注入bean 如下【OK】 （也可以在每一个实体类上添加 @JsonIgnoreProperties(value={"handler","hibernateLazyInitializer","fieldHandler"})）
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+    }
+    
+2. 获取全部数据后 使用Sort排序
+employeeJPA.findAll(new Sort(Sort.Direction.ASC, "emp_id")) 报错 No property emp found for type EmployeeByLombok  没识别 _后的内容
+  解决：修改实体类 在column(name = "empId") 按照正常命名规范    因为此处排序对应的 table orm后的Java对象的字段名
+  
+四、使用druid作为数据源
+1.引入druid依赖 在配置文件中配置druid数据源
+2.开启druid监控功能
+  1.新建DruidConfiguration类 添加@Configuration【该注解配置在类上 类中的bean会应用于全局】
+  2.在类中 创建两个bean 添加@Bean 一个返回ServletRegistrationBean  一个返回FilterRegistrationBean
+  3.在ServletRegistrationBean中 注册实体 设置IP白名单 黑名单 设置管理用户 是否可以重置数据
+  4.在FilterRegistrationBean中  创建过滤器 设置过滤器路径 忽略过滤的形式
+  5.重启后 访问 127.0.0.1:8080/druid/login.html
+  
+五、使用fastJson返回json视图
+1. 引入依赖
+2. 建立FastJsonConfiguration配置信息类 添加@Configuration 继承WebMvcConfigurerAdapter【弃用 】  重写配置消息转换方法。
+Spring 5.0后，WebMvcConfigurerAdapter被废弃，取代的方法有两种：
+①implements WebMvcConfigurer（官方推荐）
+②extends WebMvcConfigurationSupport
+
+六、springboot中添加拦截器
+1.创建实体 jpa 页面 controller等
+2.写好业务逻辑 并将用户心思添加到session中
+3.编写拦截器 实现HandlerInterceptor 对访问路径进行拦截 
+4.添加配置类 @Configuration 全局应用拦截器 拦截所有路径
+5. 注意 出现错误 “重定向循环”  可能由于未引入jasper
+  
+  

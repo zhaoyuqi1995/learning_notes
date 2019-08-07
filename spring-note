@@ -1,0 +1,15 @@
+一、登陆时 后台controller想直接输出前台提示信息后 进行页面跳转
+1. 正常使用writer写信息后 使用redirect跳转失效 报错  “已经提交response”
+2. 先使用redirect跳转 后提示信息  结果：直接跳转 不会再出现提示信息。（因为直接在服务器提交请求后 转到新页面）
+3. 正常使用writer写信息后   使用return 返回页面  不好使！
+4. 正常使用writer写信息后 仍使用writer实现跳转（因为用PrintWriter打印alert时，springmvc的跳转不会生效）
+代码如下：
+    private void printMessageAndRedirect(HttpServletResponse response, String message, String url) throws IOException {
+        response.setContentType("text/html");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        out.println(" <script type='text/javascript'> alert('"+ message +"')</script>");
+        out.println(" <script type='text/javascript'> window.location.href='"+ url +"'</script>");
+        out.flush();
+        out.close();
+    } 

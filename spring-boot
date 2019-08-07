@@ -51,5 +51,9 @@ Spring 5.0后，WebMvcConfigurerAdapter被废弃，取代的方法有两种：
 3.编写拦截器 实现HandlerInterceptor 对访问路径进行拦截 
 4.添加配置类 @Configuration 全局应用拦截器 拦截所有路径
 5. 注意 出现错误 “重定向循环”  可能由于未引入jasper
-  
-  
+6. 注意后台输出信息后 重定向问题。
+
+七、springboot整合javaMail发送邮件
+1. 引入 JavaMail依赖
+2. 编写MailEntity保存参数字段
+3. 编写MailSender 邮件发送实体 用来配置参数及执行发送

@@ -56,4 +56,13 @@ Spring 5.0后，WebMvcConfigurerAdapter被废弃，取代的方法有两种：
 七、springboot整合javaMail发送邮件
 1. 引入 JavaMail依赖
 2. 编写MailEntity保存参数字段
-3. 编写MailSender 邮件发送实体 用来配置参数及执行发送
+3. 编写MailSender 邮件发送实体 用来配置参数及执行发送 【没好使 没收到邮件 没报错 暂缓...】
+
+八、使用拦截器记录spring-boot请求日志
+1.注意在拦截器中无法使用springbean方式 注入JPA 【拦截器在 Bean 初始化之前进行，所以在拦截器中无法像这样注入 Bean】
+  解决：使用WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext()) 返回BeanFactory【实际返回WebApplicationContext】
+        使用getBean()获取bean
+2.注意拦截器的先后执行顺序 以及使用FastJson来格式化请求参数
+String param = JSON.toJSONString(request.getParameterMap(),
+                SerializerFeature.DisableCircularReferenceDetect,
+                SerializerFeature.WriteMapNullValue);

@@ -66,3 +66,7 @@ Spring 5.0后，WebMvcConfigurerAdapter被废弃，取代的方法有两种：
 String param = JSON.toJSONString(request.getParameterMap(),
                 SerializerFeature.DisableCircularReferenceDetect,
                 SerializerFeature.WriteMapNullValue);
+                
+九、springboot修改内置springmvc静态资源路径
+放置在/resources/static下的都可以被访问到【没访问成功  放在webapp下可以！】
+

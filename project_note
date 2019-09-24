@@ -1,0 +1,34 @@
+一、idea使用内嵌式jetty启动
+1. pom所需配置
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.3.2.v20150730</version>
+                <configuration>
+                    <contextXml>
+                        E:\jhhs\projectFile\jetty-content.xml
+                    </contextXml>
+                    <scanIntervalSeconds>5</scanIntervalSeconds>
+                    <httpConnector>
+                        <port>8888</port>
+                    </httpConnector>
+                    <webAppConfig>
+                        <contextPath>/med</contextPath>
+                    </webAppConfig>
+                </configuration>
+            </plugin>
+2. jetty-content.xml的放置
+ 放置在pom下 还要放置在pom中配置的目录下
+其内容：
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    <Call name="setAttribute">
+        <Arg>org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</Arg>
+        <Arg>.*/.*jsp-api-[^/]\.jar$|./.*jsp-[^/]\.jar$|./.*taglibs[^/]*\.jar$</Arg>
+    </Call>
+</Configure>
+
+3. 设置jetty启动时命令配置
+Command line设置为 jetty:run

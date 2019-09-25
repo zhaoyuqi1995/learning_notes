@@ -32,3 +32,8 @@
 
 3. 设置jetty启动时命令配置
 Command line设置为 jetty:run
+
+二、设置请求参数格式
+eg:
+@PostMapping(path="test", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+使用produces指定json格式参数类型

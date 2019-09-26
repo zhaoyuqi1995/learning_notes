@@ -37,3 +37,11 @@ Command line设置为 jetty:run
 eg:
 @PostMapping(path="test", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 使用produces指定json格式参数类型
+
+三、脚本 自动从SVN获取代码更新
+1. 
+checkout_path=$deploy_root_path/medkn_checkout
+svn co svn://192.168.8.20/yiwendao/branches/med-kn $checkout_path  --username caotian --password passw0rd
+svn co:会在你的当前目录下， 创建一个$checkout_path的文件夹， svn的med-kn的文件的内容， 会复制到当前$checkout_path文件中。
+2. 把原来的med-kn备份后移除
+   将从SVN checkout出的代码medkn_checkout移动到med-kn下

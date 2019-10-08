@@ -37,6 +37,7 @@ Command line设置为 jetty:run
 eg:
 @PostMapping(path="test", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 使用produces指定json格式参数类型
+注：目前的项目无法使用@PostMapping 因为此注解是spring4.3版本之后的 目前项目中使用的版本是spring 4.2.5
 
 三、脚本 自动从SVN获取代码更新
 1. 

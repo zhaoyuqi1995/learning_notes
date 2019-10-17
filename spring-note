@@ -13,3 +13,10 @@
         out.flush();
         out.close();
     } 
+    
+二、spring 某一个类中引用了@Autowired注入的类
+使用该类时 如果直接new实例化 则该类在spring中注入 以及其引用的类在spring中的注入 则全部失效！
+如果引入为空 可手动从spring配置中获取。详见代码如下：
+例如 需要引入AdvancedSearchService AdvancedSearchService中引入了ModelService Modelservice中引入了ModelManageService。
+ContextLoader.getCurrentWebApplicationContext().getBean(AdvancedSearchServiceImpl.class);
+

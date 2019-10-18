@@ -1,0 +1,4 @@
+一、extended_bounds使用
+问题：在聚合时，使用extended_bounds限制了查询范围 但是未生效！
+原因：extended_bounds不是过滤桶。意思是，如果extended_bounds min大于从文档中提取的值，文档仍然会规定第一个bucket是什么(对于extended_bounds也是如此)。max和最后一个bucket)。对于过滤桶，应该将直方图聚合嵌套在具有适当from/to设置的范围筛选器聚合之下。
+     所以应该先设置过滤器后 进行聚合。

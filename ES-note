@@ -2,3 +2,22 @@
 问题：在聚合时，使用extended_bounds限制了查询范围 但是未生效！
 原因：extended_bounds不是过滤桶。意思是，如果extended_bounds min大于从文档中提取的值，文档仍然会规定第一个bucket是什么(对于extended_bounds也是如此)。max和最后一个bucket)。对于过滤桶，应该将直方图聚合嵌套在具有适当from/to设置的范围筛选器聚合之下。
      所以应该先设置过滤器后 进行聚合。
+二、AcknowledgedResponse中 isAcknowledged方法
+问题：创建mapping时候 使用AcknowledgedResponse的isAcknowledged方法 有时返回为false 但mapping仍然创建成功。
+原因：可能是 返回false是因为客户端请求已经超时 此时索引还没有创建出来 但是没准一会儿就创建出来了。
+解决该问题思路：先看文档 了解该方法含义
+               查看是否是请求超时造成的原因【查看客户端配置的请求超时参数 发现未配置 则查看默认请求参数】
+               所以 可以把超时时间搞大一点就能等到超时之前，索引已经创建成功的时候啊
+               构建AcknowledgedResponse时 设置setTimeOut方法中超时时间 使用TimeValue.timeValueSeconds() 其中填入秒
+               已证实 ok！
+               
+               也可配置 "settings":{"index.write.wait_for_active_shards" : "2"}
+               含义为 到两个 shards 创建完之后就返回成功。 
+               此项尚未进行测试
+原文档：
+{
+     "acknowledged" : true,
+     "shards_acknowledged" : true,
+     "index" : test
+}
+acknowledged indicates whether the index was successfully created in the cluster, while shards_acknowledged indicates whether the requisite number of shard copies were started for each shard in the index before timing out, Note that it is still possible either acknowledged or shards_acknowledged to be false, but the index creation was successful. These values simply indicate whether the operation completed before the timeout. If acknowledged is false, then we time out before the cluster state was updated with the newly created index, but it probably will be created sometime soon. If shards_acknowledged is false, then we timed out before the requisite number of shards were started, even if the cluster state was successfully updated to reflect the newly created index.

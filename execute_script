@@ -1,0 +1,30 @@
+execute script - java code:
+describe: 'runLocalSh' method is used to execute script and get returned value, then the return value is analyzed to determine whether the execution was successful.
+
+    public static List<String> runLocalSh(String runCommand) {
+        List<String> lineArray = new ArrayList<>();
+        BufferedReader br = null;
+        try {
+            logger.info("运行的命令：" + runCommand);
+            Process ps = Runtime.getRuntime().exec(runCommand);//执行脚本
+            ps.waitFor();
+            br = new BufferedReader(new InputStreamReader(ps.getInputStream()));
+            String line;
+            while ((line = br.readLine()) != null) {
+                lineArray.add(line);
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return lineArray;
+    }
